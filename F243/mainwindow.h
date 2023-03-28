@@ -25,7 +25,7 @@ public:
     void CheckSerial(int index);// 确保其他串口都已经关闭
     void PermissionUpdate(bool select);
     void ConnectFun();// connect 函数
-    QString RandomDataGenerate(int length);// 生成随机数据
+    void RandomDataGenerate(int length);// 生成随机数据
     QByteArray DataAnasis(QString data);
     void SendData(QByteArray data);// 数据发送
 

@@ -88,21 +88,16 @@ void MainWindow::PermissionUpdate(bool select)
         ui->ParityBox->setDisabled(true);
         ui->StopBox->setDisabled(true);
         ui->ControlBox->setDisabled(true);
-        ui->HangUpModeButton->setDisabled(false);
         ui->SendButton->setDisabled(false);
         ui->SerialSwitchButton->setText("关闭串口");
     }
     else {
-        if (QString::compare(ui->HangUpModeButton->text(), "关闭挂机模式")) {
-            ui->HangUpModeButton->setText("打开挂机模式");
-            // 关闭挂机模式
-        }
+        // 如果挂机模式开了，则关闭
         ui->BaudBox->setDisabled(false);
         ui->BitBox->setDisabled(false);
         ui->ParityBox->setDisabled(false);
         ui->StopBox->setDisabled(false);
         ui->ControlBox->setDisabled(false);
-        ui->HangUpModeButton->setDisabled(true);
         ui->SendButton->setDisabled(true);
         ui->SerialSwitchButton->setText("打开串口");
     }
@@ -156,10 +151,9 @@ void MainWindow::ConnectFun()
         // 打开 txt
     });
     connect(ui->FileOpenButton, &QPushButton::clicked, this, [&](){// 打开文件
-        /*
-            1. 选择本地文件
-            2. 文件名加载到
-
+       /*
+        * 1. 选择本地文件
+        * 2. 文件名加载到
         */
     });
     connect(ui->FileSendButton, &QPushButton::clicked, this, [&](){// 发送文件
@@ -203,18 +197,18 @@ QByteArray MainWindow::DataAnasis(QString data)
      * 1. 数据加头
      * 2. 数据计算长度
      * 3. 数据计算校验位
-    */
+     */
     QByteArray completeData = data.toUtf8();
     return completeData;
 }
 // 生成随机测试数据
-QString MainWindow::RandomDataGenerate(int length)
+void MainWindow::RandomDataGenerate(int length)
 {
     /*
      *  根据 length 生成指定长度（字节）的随机数据
     */
     QString randomData;
-    return randomData + length;
+    ui->EditWindow->setPlainText(length + randomData);
 }
 // 将 data 通过串口发送出去
 void MainWindow::SendData(QByteArray data)
@@ -228,19 +222,16 @@ void MainWindow::SendData(QByteArray data)
 // 串口切换
 void MainWindow::on_PortBox_activated(int index)
 {
-    if (serial->isOpen())
-        {
-            if (serial->portName() == portName[index])
-            {
-                qDebug() << serial->portName() << "111";
-                PermissionUpdate(true);
-            }
-            else {
-                PermissionUpdate(false);}
+    if (serial->isOpen()) {
+        if (serial->portName() == portName[index]) {
+            PermissionUpdate(true);
         }
-        else
-    {qDebug() << serial->portName() << "333";
+        else {
             PermissionUpdate(false);}
+        }
+        else {
+            PermissionUpdate(false);
+    }
 }
 // 波特率选择
 void MainWindow::on_BaudBox_activated(const QString &arg1)
