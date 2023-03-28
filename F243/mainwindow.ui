@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>743</width>
-    <height>694</height>
+    <width>809</width>
+    <height>660</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,7 +15,7 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout_5">
-    <item row="0" column="1">
+    <item row="0" column="0">
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="0" column="0" colspan="3">
        <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
@@ -52,10 +52,38 @@
         <property name="verticalSpacing">
          <number>25</number>
         </property>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="text">
+           <string>波特率</string>
+          </property>
+         </widget>
+        </item>
+        <item row="1" column="0">
+         <widget class="QLabel" name="label_3">
+          <property name="text">
+           <string>数据位</string>
+          </property>
+         </widget>
+        </item>
         <item row="2" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
            <string>校验位</string>
+          </property>
+         </widget>
+        </item>
+        <item row="3" column="0">
+         <widget class="QLabel" name="label_5">
+          <property name="text">
+           <string>停止位</string>
+          </property>
+         </widget>
+        </item>
+        <item row="4" column="0">
+         <widget class="QLabel" name="label_6">
+          <property name="text">
+           <string>控制流</string>
           </property>
          </widget>
         </item>
@@ -66,7 +94,7 @@
           </property>
          </widget>
         </item>
-        <item row="7" column="0">
+        <item row="6" column="0">
          <spacer name="verticalSpacer_14">
           <property name="orientation">
            <enum>Qt::Vertical</enum>
@@ -79,43 +107,8 @@
           </property>
          </spacer>
         </item>
-        <item row="0" column="0">
-         <widget class="QLabel" name="label_2">
-          <property name="text">
-           <string>波特率</string>
-          </property>
-         </widget>
-        </item>
-        <item row="8" column="0">
+        <item row="7" column="0">
          <widget class="QLabel" name="label_12">
-          <property name="text">
-           <string/>
-          </property>
-         </widget>
-        </item>
-        <item row="1" column="0">
-         <widget class="QLabel" name="label_3">
-          <property name="text">
-           <string>数据位</string>
-          </property>
-         </widget>
-        </item>
-        <item row="4" column="0">
-         <widget class="QLabel" name="label_6">
-          <property name="text">
-           <string>控制流</string>
-          </property>
-         </widget>
-        </item>
-        <item row="3" column="0">
-         <widget class="QLabel" name="label_5">
-          <property name="text">
-           <string>停止位</string>
-          </property>
-         </widget>
-        </item>
-        <item row="6" column="0">
-         <widget class="QLabel" name="LED">
           <property name="text">
            <string/>
           </property>
@@ -140,6 +133,51 @@
         </item>
         <item>
          <widget class="QComboBox" name="BaudBox">
+          <item>
+           <property name="text">
+            <string>Custom</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>110</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>300</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>600</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1200</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2400</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>4800</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>9600</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>14400</string>
+           </property>
+          </item>
           <item>
            <property name="text">
             <string>19200</string>
@@ -178,6 +216,51 @@
           <item>
            <property name="text">
             <string>256000</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>460800</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>500000</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>512000</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>600000</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>750000</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>921600</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1000000</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>1500000</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>2000000</string>
            </property>
           </item>
          </widget>
@@ -244,11 +327,6 @@
           </item>
           <item>
            <property name="text">
-            <string>1.5</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
             <string>2</string>
            </property>
           </item>
@@ -258,7 +336,7 @@
          <widget class="QComboBox" name="ControlBox">
           <item>
            <property name="text">
-            <string>None</string>
+            <string>Hardware</string>
            </property>
           </item>
           <item>
@@ -268,24 +346,33 @@
           </item>
           <item>
            <property name="text">
-            <string>Hardware</string>
-           </property>
-          </item>
-          <item>
-           <property name="text">
-            <string>Custom</string>
+            <string>None</string>
            </property>
           </item>
          </widget>
         </item>
         <item>
-         <widget class="QComboBox" name="ProtocolSelect"/>
-        </item>
-        <item>
-         <widget class="QPushButton" name="HangUpModeButton">
-          <property name="text">
-           <string>挂机模式</string>
-          </property>
+         <widget class="QComboBox" name="ProtocolBox">
+          <item>
+           <property name="text">
+            <string>新建项目</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>新建项目</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>新建项目</string>
+           </property>
+          </item>
+          <item>
+           <property name="text">
+            <string>新建项目</string>
+           </property>
+          </item>
          </widget>
         </item>
         <item>
@@ -307,6 +394,13 @@
            </size>
           </property>
          </spacer>
+        </item>
+        <item>
+         <widget class="QPushButton" name="ShowFileData">
+          <property name="text">
+           <string>查看文件</string>
+          </property>
+         </widget>
         </item>
        </layout>
       </item>
@@ -350,7 +444,7 @@
          </spacer>
         </item>
         <item>
-         <widget class="QPushButton" name="ClearReceiveButton">
+         <widget class="QPushButton" name="ClearReceive">
           <property name="text">
            <string>清空接收</string>
           </property>
@@ -381,42 +475,23 @@
       <item row="2" column="1" colspan="3">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="spacing">
-         <number>4</number>
+         <number>12</number>
         </property>
         <property name="bottomMargin">
          <number>0</number>
         </property>
         <item>
          <widget class="QPushButton" name="FileOpenButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="text">
            <string>打开文件</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="FileName">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
+         <widget class="QLineEdit" name="FileName"/>
         </item>
         <item>
          <widget class="QPushButton" name="FileSendButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="text">
            <string>发送文件</string>
           </property>
@@ -424,12 +499,6 @@
         </item>
         <item>
          <widget class="QPushButton" name="ClearEdit">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="text">
            <string>清空编辑</string>
           </property>
@@ -438,36 +507,27 @@
        </layout>
       </item>
       <item row="3" column="1" colspan="2">
-       <layout class="QHBoxLayout" name="horizontalLayout_3" stretch="0,0,0,0">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
         <property name="spacing">
-         <number>10</number>
+         <number>16</number>
         </property>
         <property name="rightMargin">
          <number>0</number>
         </property>
         <item>
-         <widget class="QCheckBox" name="SetDelay">
+         <widget class="QCheckBox" name="DelaySend">
+          <property name="text">
+           <string>延时发送</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLineEdit" name="DelayTimeEdit">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
             <verstretch>0</verstretch>
            </sizepolicy>
-          </property>
-          <property name="text">
-           <string>定时发送</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QLineEdit" name="SetDelayEdit">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>10</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="alignment">
-           <set>Qt::AlignBottom|Qt::AlignLeading|Qt::AlignLeft</set>
           </property>
          </widget>
         </item>
@@ -495,21 +555,18 @@
       </item>
       <item row="4" column="1" colspan="2">
        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <property name="spacing">
+         <number>14</number>
+        </property>
         <item>
          <widget class="QLabel" name="label_10">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="text">
            <string>定时发送次数</string>
           </property>
          </widget>
         </item>
         <item>
-         <widget class="QLineEdit" name="SetSendingTimes">
+         <widget class="QLineEdit" name="DelaySendTimes">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
             <horstretch>0</horstretch>
@@ -534,44 +591,35 @@
        </layout>
       </item>
       <item row="5" column="1" colspan="2">
-       <layout class="QGridLayout" name="gridLayout">
-        <item row="0" column="1">
-         <widget class="QLineEdit" name="SetTestDataLength">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="2">
-         <widget class="QPushButton" name="GenerrateTestDataButton">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="text">
-           <string>生成测试数据</string>
-          </property>
-         </widget>
-        </item>
-        <item row="0" column="0">
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <property name="spacing">
+         <number>12</number>
+        </property>
+        <item>
          <widget class="QLabel" name="label_11">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
           <property name="text">
            <string>测试数据长度</string>
           </property>
          </widget>
         </item>
-        <item row="0" column="3">
+        <item>
+         <widget class="QLineEdit" name="TestDataLength">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="GenerrateTestDataButton">
+          <property name="text">
+           <string>生成测试数据</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <spacer name="horizontalSpacer_3">
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -595,7 +643,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>743</width>
+     <width>809</width>
      <height>26</height>
     </rect>
    </property>

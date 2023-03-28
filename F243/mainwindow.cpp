@@ -6,6 +6,8 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    serial = new QSerialPort;// 申请内存,并设置父对象
+    seq = 0;
     Init();
 }
 
@@ -17,8 +19,9 @@ MainWindow::~MainWindow()
 void MainWindow::Init()
 {
     SerialGet();
-    ui->SerialSwitchButton->setText("打开串口");
-    ui->ReceivingWindow->setReadOnly(true);// 接收窗口默认只读权限
+    SerialParameterInit();
+    PermissionInit();
+    ConnectFun();
 }
 // 获取计算机中的串口
 void MainWindow::SerialGet()
@@ -56,9 +59,12 @@ void MainWindow::SerialParameterInit()
 // 初始控件权限设置
 void MainWindow::PermissionInit()
 {
-    ui->HangUpModeButton->setDisabled(true);
-    ui->ReceivingWindow->setReadOnly(true);
-    ui->SendButton->setDisabled(true);
+    ui->SerialSwitchButton->setText("打开串口");// 串口开关
+
+    ui->ShowFileData->setDisabled(true);// 初始无文件打开，不允许查看文件
+    ui->FileSendButton->setDisabled(true);// 发送文件按钮不可按
+    ui->SendButton->setDisabled(true);// 发送按钮不可按
+    ui->ReceivingWindow->setReadOnly(true);// 接收窗口默认只读权限
 }
 // 串口检查
 void MainWindow::CheckSerial(int index)
@@ -77,11 +83,26 @@ void MainWindow::CheckSerial(int index)
 void MainWindow::PermissionUpdate(bool select)
 {
     if (select) {
+        ui->BaudBox->setDisabled(true);
+        ui->BitBox->setDisabled(true);
+        ui->ParityBox->setDisabled(true);
+        ui->StopBox->setDisabled(true);
+        ui->ControlBox->setDisabled(true);
         ui->HangUpModeButton->setDisabled(false);
         ui->SendButton->setDisabled(false);
         ui->SerialSwitchButton->setText("关闭串口");
     }
     else {
+        if (QString::compare(ui->HangUpModeButton->text(), "关闭挂机模式")) {
+            ui->HangUpModeButton->setText("打开挂机模式");
+            // 关闭挂机模式
+        }
+        ui->BaudBox->setDisabled(false);
+        ui->BitBox->setDisabled(false);
+        ui->ParityBox->setDisabled(false);
+        ui->StopBox->setDisabled(false);
+        ui->ControlBox->setDisabled(false);
+        ui->HangUpModeButton->setDisabled(true);
         ui->SendButton->setDisabled(true);
         ui->SerialSwitchButton->setText("打开串口");
     }
@@ -95,11 +116,11 @@ void MainWindow::ConnectFun()
             serial->setPortName(portName[ui->PortBox->currentIndex()]);
             serial->open(QIODevice::ReadWrite);
             if (serial->isOpen()) {// 打开成功
-                QMessageBox::information(this, "提示", "串口打开成功");
+                QMessageBox::information(this, "提示", serial->portName().append("串口打开成功"));
                 PermissionUpdate(true);
             }
             else {
-                QMessageBox::information(this, "提示", "串口打开失败");
+                QMessageBox::information(this, "提示", serial->portName().append("串口打开失败"));
             }
         }
         else {
@@ -107,28 +128,46 @@ void MainWindow::ConnectFun()
             serial->clear();
             serial->close();
             if (serial->isOpen()) {// 串口关闭失败
-
+                QMessageBox::information(this, "提示", serial->portName().append("串口关闭失败"));
             }
             else{// 串口关闭成功
-                QMessageBox::information(this, "提示", "串口关闭成功");
+                QMessageBox::information(this, "提示", serial->portName().append("串口关闭成功"));
                 PermissionUpdate(false);
             }
         }
     });
-    connect(ui->HangUpModeButton, &QPushButton::clicked, this, [&](){// 挂机模式
 
-    });
+            /* 挂机模式
+             * 打开挂机模式 { 自动生成数据，数据处理好放到 sendBuf 中，调用 sendData(sendBuf)  }
+            for (int i = 0; i < 次数; i++){
+                0. 收到 ack 的判断
+                1. 自动生成数据
+                2. dataAnasis() 处理数据完毕放到 sendBuf 中
+                2.9 延时
+                3. 调用 sendData(sendBuf)
+            }
+            */
     connect(ui->ViewLogButton, &QPushButton::clicked, this, [&](){// 查看日志
-
+        /* 日志格式 -- 发生相应活动时写入 txt 文件
+            1. [时间] [串口名] [数据编号] [发送成功 / 失败]
+            2. [时间] [串口名] [数据编号] [接收成功 / 失败]
+            3. [时间] [串口名] [数据编号] [发送超时]
+        */
+        // 打开 txt
     });
     connect(ui->FileOpenButton, &QPushButton::clicked, this, [&](){// 打开文件
+        /*
+            1. 选择本地文件
+            2. 文件名加载到
 
+        */
     });
     connect(ui->FileSendButton, &QPushButton::clicked, this, [&](){// 发送文件
 
     });
     connect(serial, &QSerialPort::readyRead, this, [&](){// 接收数据
         QByteArray data = serial->readAll();// 读取数据
+        dataBuf.append(data);// 数据缓冲区
         if(!data.isEmpty()){// 接收到数据
             QString str = ui->ReceivingWindow->toPlainText();// 返回纯文本
             if (!str.isEmpty()) {
@@ -138,87 +177,141 @@ void MainWindow::ConnectFun()
             ui->ReceivingWindow->append(data.toHex(' '));// 将数据放入接收窗口
             ui->ReceivingWindow->setReadOnly(true);
         }
-        //
+        // 待处理
     });
     connect(ui->SendButton, &QPushButton::clicked, this, [&](){// 发送数据
-
+        SendData(sendBuf);
     });
-    connect(ui->ClearReceiveButton, &QPushButton::clicked, this, [&](){// 清空接收窗口
-
+    connect(ui->ClearReceive, &QPushButton::clicked, this, [&](){// 清空接收窗口
+        ui->ReceivingWindow->setReadOnly(false);
+        ui->ReceivingWindow->setText("");
+        ui->ReceivingWindow->setReadOnly(true);
     });
     connect(ui->ClearEdit, &QPushButton::clicked, this, [&](){// 清空编辑窗口
         ui->EditWindow->setPlainText("");
     });
-    connect(ui->GenerrateTestDataButton, &QPushButton::clicked, this, [&](){
-
+    connect(ui->GenerrateTestDataButton, &QPushButton::clicked, this, [&](){// 生成测试数据
+        ui->EditWindow->setPlainText("");
+        int length = ui->TestDataLength->text().toInt();
+        RandomDataGenerate(length);
     });
 }
-// 生成随机测试数据
-QByteArray MainWindow::RandomDataGenerate(int length)
+// 处理原始数据得到最后待发送的数据
+QByteArray MainWindow::DataAnasis(QString data)
 {
-
+    /*
+     * 1. 数据加头
+     * 2. 数据计算长度
+     * 3. 数据计算校验位
+    */
+    QByteArray completeData = data.toUtf8();
+    return completeData;
+}
+// 生成随机测试数据
+QString MainWindow::RandomDataGenerate(int length)
+{
+    /*
+     *  根据 length 生成指定长度（字节）的随机数据
+    */
+    QString randomData;
+    return randomData + length;
+}
+// 将 data 通过串口发送出去
+void MainWindow::SendData(QByteArray data)
+{
+    seq++;
+    if (serial->write(data) > 0) {
+        // 写日志：[时间] [串口名] [数据序号] [数据发送成功 / 失败]
+        // 写到接受窗口
+    }
 }
 // 串口切换
 void MainWindow::on_PortBox_activated(int index)
 {
-    serial->setPortName(portName[index]);
-    if (serial->isOpen()) {
-        PermissionUpdate(true);
-    }
-    else {
-        PermissionUpdate(false);
-    }
+    if (serial->isOpen())
+        {
+            if (serial->portName() == portName[index])
+            {
+                qDebug() << serial->portName() << "111";
+                PermissionUpdate(true);
+            }
+            else {
+                PermissionUpdate(false);}
+        }
+        else
+    {qDebug() << serial->portName() << "333";
+            PermissionUpdate(false);}
 }
 // 波特率选择
 void MainWindow::on_BaudBox_activated(const QString &arg1)
 {
-    if (QString::compare(arg1, "19200") == 0) {
-        serial->setBaudRate(QSerialPort::Baud19200);
-    }
-    else if (QString::compare(arg1, "38400") == 0) {
-        serial->setBaudRate(QSerialPort::Baud38400);
-    }
-    else if (QString::compare(arg1, "56000") == 0) {
-        serial->setBaudRate(56000);
-    }
-    else if (QString::compare(arg1, "57600") == 0) {
-        serial->setBaudRate(QSerialPort::Baud57600);
-    }
-    else if (QString::compare(arg1, "115200") == 0) {
-        serial->setBaudRate(QSerialPort::Baud115200);
-    }
-    else if (QString::compare(arg1, "128000") == 0) {
-        serial->setBaudRate(128000);
-    }
-    else if (QString::compare(arg1, "230400") == 0) {
-        serial->setBaudRate(230400);
+    if (QString::compare(arg1, "Custom") == 0) {
+        // 输入用户自定义的波特率
     }
     else {
-        serial->setBaudRate(256000);
+        serial->setBaudRate(arg1.toInt());
     }
 }
 // 数据位选择
 void MainWindow::on_BitBox_activated(const QString &arg1)
 {
-
+    if (QString::compare(arg1, "5") == 0) {
+        serial->setDataBits(QSerialPort::Data5);
+    }
+    else if (QString::compare(arg1, "6") == 0) {
+        serial->setDataBits(QSerialPort::Data6);
+    }
+    else if (QString::compare(arg1, "7") == 0) {
+        serial->setDataBits(QSerialPort::Data7);
+    }
+    else if (QString::compare(arg1, "8") == 0) {
+        serial->setDataBits(QSerialPort::Data8);
+    }
 }
 // 校验位选择
 void MainWindow::on_ParityBox_activated(const QString &arg1)
 {
-
+    if (QString::compare(arg1, "None") == 0) {
+        serial->setParity(QSerialPort::NoParity);
+    }
+    else if (QString::compare(arg1, "Odd") == 0) {
+        serial->setParity(QSerialPort::OddParity);
+    }
+    else if (QString::compare(arg1, "Even") == 0) {
+        serial->setParity(QSerialPort::EvenParity);
+    }
+    else if (QString::compare(arg1, "Mark") == 0) {
+        serial->setParity(QSerialPort::MarkParity);
+    }
+    else if (QString::compare(arg1, "Space") == 0) {
+        serial->setParity(QSerialPort::SpaceParity);
+    }
 }
 // 停止位选择
 void MainWindow::on_StopBox_activated(const QString &arg1)
 {
-
+    if (QString::compare(arg1, "1") == 0) {
+        serial->setStopBits(QSerialPort::OneStop);
+    }
+    else {
+        serial->setStopBits(QSerialPort::TwoStop);
+    }
 }
 // 控制流选择
 void MainWindow::on_ControlBox_activated(const QString &arg1)
 {
-
+    if (QString::compare(arg1, "Hardware") == 0) {
+        serial->setFlowControl(QSerialPort::HardwareControl);
+    }
+    else if (QString::compare(arg1, "Software") == 0) {
+        serial->setFlowControl(QSerialPort::SoftwareControl);
+    }
+    else if (QString::compare(arg1, "None") == 0) {
+        serial->setFlowControl(QSerialPort::NoFlowControl);
+    }
 }
 // 协议簇选择
 void MainWindow::on_ProtocolSelect_activated(const QString &arg1)
 {
-
+    QString str = arg1;// 待定
 }

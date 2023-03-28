@@ -5,6 +5,7 @@
 #include <QtSerialPort/QSerialPort>         // 提供访问串口的功能
 #include <QtSerialPort/QSerialPortInfo>     // 提供系统中存在的串口信息
 #include <QMessageBox>
+#include <QDebug>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -24,7 +25,9 @@ public:
     void CheckSerial(int index);// 确保其他串口都已经关闭
     void PermissionUpdate(bool select);
     void ConnectFun();// connect 函数
-    QByteArray RandomDataGenerate(int length);// 生成随机数据
+    QString RandomDataGenerate(int length);// 生成随机数据
+    QByteArray DataAnasis(QString data);
+    void SendData(QByteArray data);// 数据发送
 
 private slots:
     void on_PortBox_activated(int index);
@@ -45,5 +48,12 @@ private:
     Ui::MainWindow *ui;
     QSerialPort *serial;// 定义全局的串口对象
     QStringList portName;// 存储串口名
+    QByteArray dataBuf;// 接受数据缓存区
+    QByteArray sendBuf;// 待发送数据
+    QByteArray fileBuf;
+    QByteArray mByteArrayHead;// 协议头
+    QByteArray mByteArrayLength;// 数据长度
+    QByteArray mByteArrayParity;// 校验位
+    int seq;// 数据编号
 };
 #endif // MAINWINDOW_H
